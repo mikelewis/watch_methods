@@ -1,9 +1,17 @@
 class Module
-
   def watch_for_method_added(*watch_for, &blk)
-    @method_added_watcher ||= {}
-    watch_for.each do |f|
+    class_methods = false
+    if watch_for.last.is_a? Hash
+      opts = watch_for.pop
+      class_methods = opts[:class_methods] || class_methods
+    end
 
+    added_watcher = if class_methods
+                      class << self; @method_added_watcher ||= {}; end
+                    else
+                      @method_added_watcher ||= {}
+                    end
+    watch_for.each do |f|
       key = case f
             when Regexp
               f
@@ -15,7 +23,30 @@ class Module
               f.each {|sub_f| watch_for_method_added(sub_f, &blk)}
               nil
             end
-      @method_added_watcher[key] = blk if key
+      added_watcher[key] = blk if key
     end
   end
+
+  def method_added(meth)
+    return unless @method_added_watcher
+
+    str_meth = meth.to_s
+    if found = @method_added_watcher.find{|key,value| key.match(str_meth)}
+      key, callback = found
+      callback.call(meth)
+    end
+  end
+
+  def singleton_method_added(meth)
+    (class << self; self; end).class_eval do
+      return unless @method_added_watcher
+
+      str_meth = meth.to_s
+      if found = @method_added_watcher.find{|key,value| key.match(str_meth)}
+        key, callback = found
+        callback.call(meth)
+      end
+    end
+end
+
 end
