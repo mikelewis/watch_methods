@@ -27,18 +27,8 @@ class Module
     end
   end
 
-  def method_added(meth)
-    return unless @method_added_watcher
-
-    str_meth = meth.to_s
-    if found = @method_added_watcher.find{|key,value| key.match(str_meth)}
-      key, callback = found
-      callback.call(meth)
-    end
-  end
-
-  def singleton_method_added(meth)
-    (class << self; self; end).class_eval do
+  def maybe_call_callback(meth, context)
+    context.class_eval do
       return unless @method_added_watcher
 
       str_meth = meth.to_s
@@ -47,6 +37,19 @@ class Module
         callback.call(meth)
       end
     end
-end
+  end
+
+  private :maybe_call_callback
+
+  def method_added(meth)
+    maybe_call_callback(meth, self)
+  end
+
+  def singleton_method_added(meth)
+    context = class << self; self; end
+    maybe_call_callback(meth, context)
+  end
+
+
 
 end
