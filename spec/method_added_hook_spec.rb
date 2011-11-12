@@ -11,6 +11,7 @@ describe "Method Added Hook" do
         end
       end
     end
+
     it "should add a class method watch_for_method_added" do
       Module.should respond_to(:watch_method_added)
       SampleObject.should respond_to(:watch_method_added)
@@ -61,6 +62,24 @@ describe "Method Added Hook" do
         result.should == 5
       end
     end
+
+    {:string => "my_method", :symbol => :my_method, :regex => /^my_method$/, :array => [1,2,3, "my_method"]}.each do |type, value|
+      it "should call a callback when a method is added with a #{type} before watch_method_added was called" do
+        result = nil
+        SampleObject.class_eval do
+          def my_method
+
+          end
+
+          watch_method_added value do |meth|
+            result = 5
+          end
+        end
+
+        result.should == 5
+      end
+    end
+
   end
 
   context "class methods" do
@@ -73,28 +92,45 @@ describe "Method Added Hook" do
   it "should work with eigenclass methods and eigenclass watch_method_added" do
     result = nil
     meta = class << SampleClassObject; self; end
-    meta.class_eval do
-      watch_method_added :game do |meth|
-        result = 5
-      end
+  meta.class_eval do
+    watch_method_added :game do |meth|
+      result = 5
     end
-
-    class SampleClassObject
-      class << self
-        def game
-
-        end
-      end
-    end
-
-    result.should == 5
   end
 
-  it "should work with singleton methods and eigenclass" do
+  class SampleClassObject
+    class << self
+      def game
+
+      end
+    end
+  end
+
+  result.should == 5
+end
+
+it "should work with singleton methods and eigenclass" do
+  result = nil
+  meta = class << SampleClassObject; self; end
+meta.class_eval do
+  watch_method_added :game do |meth|
+    result = 5
+  end
+end
+
+class SampleClassObject
+  def self.game
+
+  end
+end
+
+result.should == 5
+  end
+
+  it "should work with singleton methods and optional parameter" do
     result = nil
-    meta = class << SampleClassObject; self; end
-    meta.class_eval do
-      watch_method_added :game do |meth|
+    SampleClassObject.class_eval do
+      watch_method_added :game, :class_methods => true do |meth|
         result = 5
       end
     end
@@ -117,23 +153,6 @@ describe "Method Added Hook" do
     end
 
     class SampleClassObject
-      def self.game
-
-      end
-    end
-
-    result.should == 5
-  end
-
-  it "should work with singleton methods and optional parameter" do
-    result = nil
-    SampleClassObject.class_eval do
-      watch_method_added :game, :class_methods => true do |meth|
-        result = 5
-      end
-    end
-
-    class SampleClassObject
       class << self
         def game
 
@@ -143,6 +162,26 @@ describe "Method Added Hook" do
 
     result.should == 5
   end
+
+     {:string => "my_method", :symbol => :my_method, :regex => /^my_method$/, :array => [1,2,3, "my_method"]}.each do |type, value|
+      it "should call a callback when a method is added with a #{type} before watch_method_added was called" do
+        result = nil
+        SampleClassObject.class_eval do
+          class << self
+            def my_method
+
+            end
+          end
+
+          watch_method_added value, :class_methods => true do |meth|
+            result = 5
+          end
+        end
+
+        result.should == 5
+      end
+    end
+
 
   it "should work with an array and the optional parameter" do
     result = nil

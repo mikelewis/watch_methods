@@ -6,11 +6,10 @@ class Module
       class_methods = opts[:class_methods] || class_methods
     end
 
-    added_watcher = if class_methods
-                      class << self; @method_added_watcher ||= {}; end
-                    else
-                      @method_added_watcher ||= {}
-                    end
+    context = class_methods ? (class << self; self; end) : self
+
+    added_watcher = context.class_eval { @method_added_watcher ||= {} }
+
     watch_for.each do |f|
       key = case f
             when Regexp
@@ -23,7 +22,14 @@ class Module
               f.each {|*sub_f| sub_f << opts if opts; watch_method_added(*sub_f, &blk)}
               nil
             end
-      added_watcher[key] = blk if key
+
+
+      if key
+        if meth = context.instance_methods(false).find{|m| key.match(m.to_s)}
+          blk.call(meth)
+        end
+        added_watcher[key] = blk
+      end
     end
   end
 

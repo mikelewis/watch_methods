@@ -57,7 +57,7 @@ But if your method was defined like this:
 
     def do_work_on(*meths)
       meths.each do |meth|
-        m = instance_method(meth)
+        alias_method "old_meth_#{meth}", meth
       end
     end
 
@@ -66,7 +66,7 @@ It will throw an exception as you haven't defined that method yet.
 #Solution
 
 ##Install
-    [sudo] gem install method_added_hook
+    Coming soon
 
 ##Usage
    The method that you'll be interacting with is the `watch_method_added` method that is defined as:
@@ -93,8 +93,19 @@ It will throw an exception as you haven't defined that method yet.
 
   or a combination of all of the above:
 
-    watch_method_added(:special_func, /^test_meth$/, [:meth1, :meth2[) do |meth|
+    watch_method_added(:special_func, /^test_meth$/, [:meth1, :meth2]) do |meth|
 
     end
-  To see all examples/cases, see the examples dir and the spec file.
+
+So to solve the problem we mentioned above, you can do this:
+
+    def do_work_on(*meths)
+       watch_method_added(meths) do |meth|
+        alias_method "old_meth_#{meth}", meth
+      end
+    end
+
+But what if you want to support `do_work_on` after method declaration? No problem! `watch_method_added` knows if a method that you want to watch was already added.
+
+  To see all examples/cases, see the examples directory and the spec file.
 
