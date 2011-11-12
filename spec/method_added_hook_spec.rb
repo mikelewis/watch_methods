@@ -7,13 +7,13 @@ describe "Method Added Hook" do
         Object.send(:remove_const, :SampleObject)
       end
       SampleObject = Class.new do
-        watch_for_method_added :mike, /^test_.*/, "jump" do |method|
+        watch_method_added :mike, /^test_.*/, "jump" do |method|
         end
       end
     end
     it "should add a class method watch_for_method_added" do
-      Module.should respond_to(:watch_for_method_added)
-      SampleObject.should respond_to(:watch_for_method_added)
+      Module.should respond_to(:watch_method_added)
+      SampleObject.should respond_to(:watch_method_added)
     end
 
     it "should create a class instance variable with the correct hash method_added_watcher" do
@@ -28,7 +28,7 @@ describe "Method Added Hook" do
       h = SampleObject.class_eval{ @method_added_watcher }
       old_keys = h.keys
 
-      SampleObject.class_eval { watch_for_method_added(:up) {} }
+      SampleObject.class_eval { watch_method_added(:up) {} }
 
       new_hash = SampleObject.class_eval{ @method_added_watcher }
 
@@ -36,7 +36,7 @@ describe "Method Added Hook" do
     end
 
     it "should expand all arrays" do
-      SampleObject.class_eval { watch_for_method_added ["meth1", "meth2"] {} }
+      SampleObject.class_eval { watch_method_added ["meth1", "meth2"] {} }
       h = SampleObject.class_eval{ @method_added_watcher }
       h.each_key do |key|
         key.class.should_not == Array
@@ -47,7 +47,7 @@ describe "Method Added Hook" do
       it "should call a callback when a method is added with a #{type}" do
         result = nil
         SampleObject.class_eval do
-          watch_for_method_added value do |meth|
+          watch_method_added value do |meth|
             result = 5
           end
         end
@@ -70,11 +70,11 @@ describe "Method Added Hook" do
     SampleClassObject = Class.new
   end
 
-  it "should work with eigenclass methods and eigenclass watch_for_method" do
+  it "should work with eigenclass methods and eigenclass watch_method_added" do
     result = nil
     meta = class << SampleClassObject; self; end
     meta.class_eval do
-      watch_for_method_added :game do |meth|
+      watch_method_added :game do |meth|
         result = 5
       end
     end
@@ -94,7 +94,7 @@ describe "Method Added Hook" do
     result = nil
     meta = class << SampleClassObject; self; end
     meta.class_eval do
-      watch_for_method_added :game do |meth|
+      watch_method_added :game do |meth|
         result = 5
       end
     end
@@ -111,7 +111,7 @@ describe "Method Added Hook" do
   it "should work with singleton methods and optional parameter" do
     result = nil
     SampleClassObject.class_eval do
-      watch_for_method_added :game, :class_methods => true do |meth|
+      watch_method_added :game, :class_methods => true do |meth|
         result = 5
       end
     end
@@ -128,7 +128,7 @@ describe "Method Added Hook" do
   it "should work with singleton methods and optional parameter" do
     result = nil
     SampleClassObject.class_eval do
-      watch_for_method_added :game, :class_methods => true do |meth|
+      watch_method_added :game, :class_methods => true do |meth|
         result = 5
       end
     end
@@ -136,6 +136,25 @@ describe "Method Added Hook" do
     class SampleClassObject
       class << self
         def game
+
+        end
+      end
+    end
+
+    result.should == 5
+  end
+
+  it "should work with an array and the optional parameter" do
+    result = nil
+    SampleClassObject.class_eval do
+      watch_method_added [:game, :test], :class_methods => true do |meth|
+        result = 5
+      end
+    end
+
+    class SampleClassObject
+      class << self
+        def test
 
         end
       end

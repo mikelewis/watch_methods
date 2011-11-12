@@ -1,5 +1,5 @@
 class Module
-  def watch_for_method_added(*watch_for, &blk)
+  def watch_method_added(*watch_for, &blk)
     class_methods = false
     if watch_for.last.is_a? Hash
       opts = watch_for.pop
@@ -20,7 +20,7 @@ class Module
             when String
               f
             when Array
-              f.each {|sub_f| watch_for_method_added(sub_f, &blk)}
+              f.each {|*sub_f| sub_f << opts if opts; watch_method_added(*sub_f, &blk)}
               nil
             end
       added_watcher[key] = blk if key
