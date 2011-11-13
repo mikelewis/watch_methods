@@ -67,7 +67,7 @@ It will throw an exception as you haven't defined that method yet.
 
 ##Install
 
-    [sudo] gem install simpleconf
+    [sudo] gem install method_added_hook
 
 
 ##Usage
