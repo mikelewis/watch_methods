@@ -1,3 +1,4 @@
+
 method_added hook
 =============
 
@@ -70,19 +71,22 @@ It will throw an exception as you haven't defined that method yet.
     [sudo] gem install method_added_hook
 
 
+### Skip all the crap, give me the examples.
+   [Examples](https://github.com/mikelewis/method_added_hook/tree/master/examples)
+
 ##Usage
    The method that you'll be interacting with is the `watch_method_added` method that is defined as:
 
     watch_method_added(methods, opts={}, &blk)
 
-   Where methods can be a symbol, string, array, regex or any combination.
+   - Where methods can be a symbol, string, array, regex or any combination.
 
-   opts currently has two optional parameters `:class_methods` to watch for class methods and `:once` to
+   - opts currently has two optional parameters `:class_methods` to watch for class methods and `:once` to
    only run the given block once for a given watch.
 
-   a given block, which will get run after a given method to watch was defined.
+   - a given block, which will get run after a given method to watch was added.
 
- Here are some valid uses of `watch_method_added`:
+Here are some valid uses of `watch_method_added`:
 
     watch_method_added(:special_func1, :special_func2) do |meth|
 
@@ -96,7 +100,7 @@ It will throw an exception as you haven't defined that method yet.
 
     watch_method_added([:meth_one, :meth_two]) do |meth|
 
-    end
+     end
 
   or a combination of all of the above:
 
@@ -114,5 +118,5 @@ So to solve the problem we mentioned above, you can do this:
 
 But what if you want to support `do_work_on` after method declaration? No problem! `watch_method_added` knows if a method that you want to watch was already added.
 
-  To get a better idea of what you can do, see the examples directory.
+  To see all examples/cases, see the examples directory and the spec file.
 
