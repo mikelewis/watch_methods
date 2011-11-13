@@ -2,69 +2,16 @@
 method_added hook
 =============
 
-#Problem
+## What is this thing?
 
-Developing an API that involves monitoring/editing a method like this is quite annoying as you need to have your users put your class_method call after the method declaration like so:
+  Monitor when methods are added to classes or modules and take action when they do.
 
-    class A
+## Why would I want this?
+  You are:
 
-       def print_stuff
-         puts "hi"
-       end
-
-       do_work_on :print_stuff
-
-
-       def jump
-         puts "jumping"
-       end
-
-       do_work_on :jump
-
-
-       def crawl
-         puts "crawl"
-       end
-
-       do_work_on :crawl
-    end
-
-Wouldn't it be nice to allow your users to mention methods before they are declared like this?:
-
-
-    class A
-
-       do_work_on :print_stuff
-       do_work_on :crawl
-       do_work_on :jump
-
-       # or do_work_on :print_stuff, :crawl, :jump
-
-       def print_stuff
-         puts "hi"
-       end
-
-       def jump
-         puts "jumping"
-       end
-
-       def crawl
-         puts "crawl"
-       end
-    end
-
-
-But if your method was defined like this:
-
-    def do_work_on(*meths)
-      meths.each do |meth|
-        alias_method "old_meth_#{meth}", meth
-      end
-    end
-
-It will throw an exception as you haven't defined that method yet.
-
-#Solution
+  - developing a kick-ass gem and you want your users to use your class methods before methods are actually defined (think AR validators, callback etc.)
+  - Want to monitor all methods starting with queue_ for your new awesome queueing gem.
+  - and more!
 
 ##Install
 
@@ -79,10 +26,12 @@ It will throw an exception as you haven't defined that method yet.
 
     watch_method_added(methods, opts={}, &blk)
 
-   - Where methods can be a symbol, string, array, regex or any combination.
+   Where:
+
+   - methods can be a symbol, string, array, regex or any combination. This will be all the methods you want to monitor.
 
    - opts currently has two optional parameters `:class_methods` to watch for class methods and `:once` to
-   only run the given block once for a given watch.
+   only run the given block once for a given method.
 
    - a given block, which will get run after a given method to watch was added.
 
@@ -107,16 +56,6 @@ Here are some valid uses of `watch_method_added`:
     watch_method_added(:special_func, /^test_meth$/, [:meth1, :meth2]) do |meth|
 
     end
-
-So to solve the problem we mentioned above, you can do this:
-
-    def do_work_on(*meths)
-       watch_method_added(meths) do |meth|
-        alias_method "old_meth_#{meth}", meth
-      end
-    end
-
-But what if you want to support `do_work_on` after method declaration? No problem! `watch_method_added` knows if a method that you want to watch was already added.
 
   To see all examples/cases, see the examples directory and the spec file.
 
