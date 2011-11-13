@@ -5,11 +5,12 @@ class Module
     callback_hash = method_added_hash[key]
     callback = callback_hash[:callback]
     once = callback_hash[:once]
-
+    method_added_hash.delete(key) if once
     callback.call(meth)
 
-    method_added_hash.delete(key) if once
   end
+
+  private :call_callback
 
   def watch_method_added(*watch_for, &blk)
     class_methods = false

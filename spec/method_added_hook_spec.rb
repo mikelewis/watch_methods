@@ -62,6 +62,24 @@ describe "Method Added Hook" do
       result.should == 20
     end
 
+    it "should accept an optional parameter once and only monitor a method once (in practice)" do
+      lambda {
+      result = nil
+      SampleObject.class_eval do
+        watch_method_added(:up, :once => true) do |meth|
+          alias_method :"old_#{meth}", meth
+          define_method(meth) {}
+        end
+
+        def up
+
+        end
+      end
+
+      }.should_not raise_error(SystemStackError)
+      # if we didn't pass in once, we would get into an infinite loop of defining a method
+    end
+
     it "should expand all arrays" do
       SampleObject.class_eval { watch_method_added ["meth1", "meth2"] {} }
       h = SampleObject.class_eval{ @method_added_watcher }
