@@ -36,6 +36,32 @@ describe "Method Added Hook" do
       new_hash.keys.should =~ (old_keys << "up")
     end
 
+    it "should accept an optional parameter once and only monitor a method once" do
+      result = nil
+      SampleObject.class_eval do
+        watch_method_added(:up, :once => true) { result = 5 }
+
+        def up
+
+        end
+      end
+
+      result.should == 5
+      result = 20
+
+      new_hash = SampleObject.class_eval { @method_added_watcher }
+      new_hash.should_not include("up")
+
+      SampleObject.class_eval do
+        def up
+
+        end
+      end
+
+      # in other words, its not 5
+      result.should == 20
+    end
+
     it "should expand all arrays" do
       SampleObject.class_eval { watch_method_added ["meth1", "meth2"] {} }
       h = SampleObject.class_eval{ @method_added_watcher }

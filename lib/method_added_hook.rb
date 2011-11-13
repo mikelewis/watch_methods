@@ -1,9 +1,23 @@
 class Module
+
+  def call_callback(method_added_hash, key, meth)
+    return unless method_added_hash.include?(key)
+    callback_hash = method_added_hash[key]
+    callback = callback_hash[:callback]
+    once = callback_hash[:once]
+
+    callback.call(meth)
+
+    method_added_hash.delete(key) if once
+  end
+
   def watch_method_added(*watch_for, &blk)
     class_methods = false
+    once = false
     if watch_for.last.is_a? Hash
       opts = watch_for.pop
       class_methods = opts[:class_methods] || class_methods
+      once = opts[:once] || once
     end
 
     context = class_methods ? (class << self; self; end) : self
@@ -25,10 +39,10 @@ class Module
 
 
       if key
+        added_watcher[key] = {:callback => blk, :once => once}
         if meth = context.instance_methods(false).find{|m| key.match(m.to_s)}
-          blk.call(meth)
+          call_callback(added_watcher, key, meth)
         end
-        added_watcher[key] = blk
       end
     end
   end
@@ -39,8 +53,8 @@ class Module
 
       str_meth = meth.to_s
       if found = @method_added_watcher.find{|key,value| key.match(str_meth)}
-        key, callback = found
-        callback.call(meth)
+        key, callback_hash = found
+        call_callback(@method_added_watcher, key, meth)
       end
     end
   end
