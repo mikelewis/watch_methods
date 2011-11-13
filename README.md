@@ -1,5 +1,4 @@
-
-method_added hook
+watch_methods
 =============
 
 ## What is this thing?
