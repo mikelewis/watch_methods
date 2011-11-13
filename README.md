@@ -75,7 +75,12 @@ It will throw an exception as you haven't defined that method yet.
 
     watch_method_added(methods, opts={}, &blk)
 
-   Where methods can be a symbol, string, array, regex or any combination, opts currently has one optional parameter `:class_methods` to watch for class methods and a given block, which will get run after a given method to watch was added.
+   Where methods can be a symbol, string, array, regex or any combination.
+
+   opts currently has two optional parameters `:class_methods` to watch for class methods and `:once` to
+   only run the given block once for a given watch.
+
+   a given block, which will get run after a given method to watch was defined.
 
  Here are some valid uses of `watch_method_added`:
 
@@ -109,5 +114,5 @@ So to solve the problem we mentioned above, you can do this:
 
 But what if you want to support `do_work_on` after method declaration? No problem! `watch_method_added` knows if a method that you want to watch was already added.
 
-  To see all examples/cases, see the examples directory and the spec file.
+  To get a better idea of what you can do, see the examples directory.
 
