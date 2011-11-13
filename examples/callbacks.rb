@@ -9,7 +9,6 @@ module Callbacks
     [:after, :before].each do |action|
       define_method(action) do |meth, opts={}|
         watch_method_added meth, :once => true do |m|
-        puts meth
           register_callback(action, m, opts)
         end
       end
@@ -26,9 +25,9 @@ module Callbacks
       end
 
       define_method(meth) do |*args, &blk|
-        before_proc.call
+        instance_eval &before_proc
         send(:"old_#{meth}", *args, &blk)
-        after_proc.call
+        instance_eval &after_proc
       end
     end
   end
@@ -37,8 +36,29 @@ end
 class Test
   include Callbacks
   after :jump, :do => :crawl
+  before :crawl, :do => :stretch
 
   def jump
+    puts "I'm jumpin"
+  end
 
+  def stretch
+    puts "I'm stretchin"
+  end
+
+  def crawl
+    puts "I'm crawlin"
   end
 end
+
+
+t = Test.new
+
+t.jump
+
+#
+# prints
+# I'm jumpin
+# I'm stretchin
+# I'm crawlin
+#
