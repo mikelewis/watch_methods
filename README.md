@@ -3,7 +3,7 @@ method_added hook
 
 #Problem
 
-Developing an API that involves monitoring/editing a method like this is quite annoying as you need to have your users put your do_work_on after the method declaration like so:
+Developing an API that involves monitoring/editing a method like this is quite annoying as you need to have your users put your class_method call after the method declaration like so:
 
     class A
 
@@ -66,7 +66,8 @@ It will throw an exception as you haven't defined that method yet.
 #Solution
 
 ##Install
-    Coming soon
+  [sudo] gem install simpleconf
+
 
 ##Usage
    The method that you'll be interacting with is the `watch_method_added` method that is defined as:
