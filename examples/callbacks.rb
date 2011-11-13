@@ -8,7 +8,7 @@ module Callbacks
   module ClassMethods
     [:after, :before].each do |action|
       define_method(action) do |meth, opts={}|
-        watch_method_added meth, :once => true do |m|
+        watch_methods meth, :once => true do |m|
           register_callback(action, m, opts)
         end
       end

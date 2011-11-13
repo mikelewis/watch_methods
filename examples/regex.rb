@@ -1,7 +1,7 @@
 require 'method_added_hook'
 
 class Queues
-  watch_method_added /^queue_(.+)$/ do |meth|
+  watch_methods /^queue_(.+)$/ do |meth|
     puts "Queue #{meth} was added!"
   end
 

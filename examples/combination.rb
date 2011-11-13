@@ -1,7 +1,7 @@
 require 'method_added_hook'
 
 class Combo
-  watch_method_added :test, "jump", [:cry, :dance], /^sing$/ do |meth|
+  watch_methods :test, "jump", [:cry, :dance], /^sing$/ do |meth|
     puts "#{meth} was added!"
   end
 

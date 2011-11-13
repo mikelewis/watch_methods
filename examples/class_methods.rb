@@ -1,16 +1,16 @@
 require 'method_added_hook'
 
 class ClassMethodHook
-  watch_method_added /crawl|jump|sit/, :class_methods => true do |meth|
+  watch_methods /crawl|jump|sit/, :class_methods => true do |meth|
     puts "#{meth} was added!"
   end
 
-  watch_method_added :smile, :class_methods => true do |meth|
+  watch_methods :smile, :class_methods => true do |meth|
     puts "Smile was added!"
   end
 
   class << self
-    watch_method_added :scream do |meth|
+    watch_methods :scream do |meth|
       puts "scream was added"
     end
   end

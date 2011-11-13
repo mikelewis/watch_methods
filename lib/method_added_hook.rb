@@ -12,7 +12,7 @@ class Module
 
   private :call_callback
 
-  def watch_method_added(*watch_for, &blk)
+  def watch_methods(*watch_for, &blk)
     class_methods = false
     once = false
     if watch_for.last.is_a? Hash
@@ -34,7 +34,7 @@ class Module
             when String
               f
             when Array
-              f.each {|*sub_f| sub_f << opts if opts; watch_method_added(*sub_f, &blk)}
+              f.each {|*sub_f| sub_f << opts if opts; watch_methods(*sub_f, &blk)}
               nil
             end
 

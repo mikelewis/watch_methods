@@ -2,7 +2,7 @@ require 'method_added_hook'
 
 
 class ManyDeclarations
-  watch_method_added :test, :once => true do |meth|
+  watch_methods :test, :once => true do |meth|
     puts "test was added!"
   end
 

@@ -7,14 +7,14 @@ describe "Method Added Hook" do
         Object.send(:remove_const, :SampleObject)
       end
       SampleObject = Class.new do
-        watch_method_added :mike, /^test_.*/, "jump" do |method|
+        watch_methods :mike, /^test_.*/, "jump" do |method|
         end
       end
     end
 
     it "should add a class method watch_for_method_added" do
-      Module.should respond_to(:watch_method_added)
-      SampleObject.should respond_to(:watch_method_added)
+      Module.should respond_to(:watch_methods)
+      SampleObject.should respond_to(:watch_methods)
     end
 
     it "should create a class instance variable with the correct hash method_added_watcher" do
@@ -29,7 +29,7 @@ describe "Method Added Hook" do
       h = SampleObject.class_eval{ @method_added_watcher }
       old_keys = h.keys
 
-      SampleObject.class_eval { watch_method_added(:up) {} }
+      SampleObject.class_eval { watch_methods(:up) {} }
 
       new_hash = SampleObject.class_eval{ @method_added_watcher }
 
@@ -39,7 +39,7 @@ describe "Method Added Hook" do
     it "should accept an optional parameter once and only monitor a method once" do
       result = nil
       SampleObject.class_eval do
-        watch_method_added(:up, :once => true) { result = 5 }
+        watch_methods(:up, :once => true) { result = 5 }
 
         def up
 
@@ -66,7 +66,7 @@ describe "Method Added Hook" do
       lambda {
       result = nil
       SampleObject.class_eval do
-        watch_method_added(:up, :once => true) do |meth|
+        watch_methods(:up, :once => true) do |meth|
           alias_method :"old_#{meth}", meth
           define_method(meth) {}
         end
@@ -81,7 +81,7 @@ describe "Method Added Hook" do
     end
 
     it "should expand all arrays" do
-      SampleObject.class_eval { watch_method_added ["meth1", "meth2"] {} }
+      SampleObject.class_eval { watch_methods ["meth1", "meth2"] {} }
       h = SampleObject.class_eval{ @method_added_watcher }
       h.each_key do |key|
         key.class.should_not == Array
@@ -92,7 +92,7 @@ describe "Method Added Hook" do
       it "should call a callback when a method is added with a #{type}" do
         result = nil
         SampleObject.class_eval do
-          watch_method_added value do |meth|
+          watch_methods value do |meth|
             result = 5
           end
         end
@@ -108,14 +108,14 @@ describe "Method Added Hook" do
     end
 
     {:string => "my_method", :symbol => :my_method, :regex => /^my_method$/, :array => [1,2,3, "my_method"]}.each do |type, value|
-      it "should call a callback when a method is added with a #{type} before watch_method_added was called" do
+      it "should call a callback when a method is added with a #{type} before watch_methods was called" do
         result = nil
         SampleObject.class_eval do
           def my_method
 
           end
 
-          watch_method_added value do |meth|
+          watch_methods value do |meth|
             result = 5
           end
         end
@@ -127,7 +127,7 @@ describe "Method Added Hook" do
     it "should yield the method name (Symbol) to the block" do
       result = nil
       SampleObject.class_eval do
-        watch_method_added /^t.*$/ do |meth|
+        watch_methods /^t.*$/ do |meth|
           result = meth
         end
 
@@ -149,11 +149,11 @@ describe "Method Added Hook" do
       SampleClassObject = Class.new
     end
 
-    it "should work with eigenclass methods and eigenclass watch_method_added" do
+    it "should work with eigenclass methods and eigenclass watch_methods" do
         result = nil
         meta = class << SampleClassObject; self; end
         meta.class_eval do
-          watch_method_added :game do |meth|
+          watch_methods :game do |meth|
             result = 5
           end
         end
@@ -173,7 +173,7 @@ describe "Method Added Hook" do
       result = nil
       meta = class << SampleClassObject; self; end
       meta.class_eval do
-        watch_method_added :game do |meth|
+        watch_methods :game do |meth|
           result = 5
         end
       end
@@ -190,7 +190,7 @@ describe "Method Added Hook" do
     it "should work with singleton methods and optional parameter" do
       result = nil
       SampleClassObject.class_eval do
-        watch_method_added :game, :class_methods => true do |meth|
+        watch_methods :game, :class_methods => true do |meth|
           result = 5
         end
       end
@@ -207,7 +207,7 @@ describe "Method Added Hook" do
     it "should work with eigenclass methods and optional parameter" do
       result = nil
       SampleClassObject.class_eval do
-        watch_method_added :game, :class_methods => true do |meth|
+        watch_methods :game, :class_methods => true do |meth|
           result = 5
         end
       end
@@ -224,7 +224,7 @@ describe "Method Added Hook" do
     end
 
     {:string => "my_method", :symbol => :my_method, :regex => /^my_method$/, :array => [1,2,3, "my_method"]}.each do |type, value|
-      it "should call a callback when a method is added with a #{type} before watch_method_added was called" do
+      it "should call a callback when a method is added with a #{type} before watch_methods was called" do
         result = nil
         SampleClassObject.class_eval do
           class << self
@@ -233,7 +233,7 @@ describe "Method Added Hook" do
             end
           end
 
-          watch_method_added value, :class_methods => true do |meth|
+          watch_methods value, :class_methods => true do |meth|
             result = 5
           end
         end
@@ -246,7 +246,7 @@ describe "Method Added Hook" do
     it "should work with an array and the optional parameter" do
       result = nil
       SampleClassObject.class_eval do
-        watch_method_added [:game, :test], :class_methods => true do |meth|
+        watch_methods [:game, :test], :class_methods => true do |meth|
           result = 5
         end
       end
@@ -274,7 +274,7 @@ describe "Method Added Hook" do
     it "should work for an instance method" do
       result = nil
       SampleModuleObject.module_eval do
-        watch_method_added :hi do
+        watch_methods :hi do
           result = 5
         end
       end
@@ -290,7 +290,7 @@ describe "Method Added Hook" do
     it "should work for a singleton method" do
       result = nil
       SampleModuleObject.module_eval do
-        watch_method_added :hi, :class_methods => true do
+        watch_methods :hi, :class_methods => true do
           result = 5
         end
       end
@@ -307,7 +307,7 @@ describe "Method Added Hook" do
     it "should work for an eigenclass method" do
       result = nil
       SampleModuleObject.module_eval do
-        watch_method_added :hi, :class_methods => true do
+        watch_methods :hi, :class_methods => true do
           result = 5
         end
       end
@@ -326,7 +326,7 @@ describe "Method Added Hook" do
       result = nil
       meta = (class << SampleModuleObject; self; end)
       meta.class_eval do
-        watch_method_added :hi do
+        watch_methods :hi do
           result = 5
         end
       end
@@ -346,7 +346,7 @@ describe "Method Added Hook" do
       result = nil
       meta = (class << SampleModuleObject; self; end)
       meta.class_eval do
-        watch_method_added :hi do
+        watch_methods :hi do
           result = 5
         end
       end

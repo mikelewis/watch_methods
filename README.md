@@ -22,9 +22,9 @@ method_added hook
    [Examples](https://github.com/mikelewis/method_added_hook/tree/master/examples)
 
 ##Usage
-   The method that you'll be interacting with is the `watch_method_added` method that is defined as:
+   The method that you'll be interacting with is the `watch_methods` method that is defined as:
 
-    watch_method_added(methods, opts={}, &blk)
+    watch_methods(methods, opts={}, &blk)
 
    Where:
 
@@ -35,25 +35,25 @@ method_added hook
 
    - a given block, which will get run after a given method to watch was added.
 
-Here are some valid uses of `watch_method_added`:
+Here are some valid uses of `watch_methods`:
 
-    watch_method_added(:special_func1, :special_func2) do |meth|
+    watch_methods(:special_func1, :special_func2) do |meth|
 
     end
 
 
     # this will watch any class method starting with test_, queue_
-    watch_method_added(/^test_.+$/, /^queue_.+$/, :class _methods => true) do |meth|
+    watch_methods(/^test_.+$/, /^queue_.+$/, :class _methods => true) do |meth|
 
     end
 
-    watch_method_added([:meth_one, :meth_two]) do |meth|
+    watch_methods([:meth_one, :meth_two]) do |meth|
 
      end
 
   or a combination of all of the above:
 
-    watch_method_added(:special_func, /^test_meth$/, [:meth1, :meth2]) do |meth|
+    watch_methods(:special_func, /^test_meth$/, [:meth1, :meth2]) do |meth|
 
     end
 

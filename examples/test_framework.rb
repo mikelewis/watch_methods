@@ -3,7 +3,7 @@ require 'method_added_hook'
 class TestFramework
   def self.inherited(base)
     at_exit { instance = base.new; @tests.each{|test| instance.send(test)} }
-    base.watch_method_added /^test_.+$/ do |meth|
+    base.watch_methods /^test_.+$/ do |meth|
       (@tests ||= []) << meth
     end
   end

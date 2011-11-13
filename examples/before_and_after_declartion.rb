@@ -1,7 +1,7 @@
 require 'method_added_hook'
 
 class BeforeAndAfter
-  watch_method_added :yo do |meth|
+  watch_methods :yo do |meth|
     puts "yo was added!"
   end
 
@@ -13,7 +13,7 @@ class BeforeAndAfter
 
   end
 
-  watch_method_added :hey do |meth|
+  watch_methods :hey do |meth|
     puts "Hey was added!"
   end
 end
