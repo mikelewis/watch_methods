@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "method_added_hook/version"
+require "watch_methods/version"
 
 Gem::Specification.new do |s|
   s.name        = "method_added_hook"
-  s.version     = MethodAddedHook::VERSION
+  s.version     = WatchMethods::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Mike Lewis"]
   s.email       = ["ft.mikelewis@gmail.com"]

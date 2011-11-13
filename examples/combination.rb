@@ -1,4 +1,4 @@
-require 'method_added_hook'
+require 'watch_methods'
 
 class Combo
   watch_methods :test, "jump", [:cry, :dance], /^sing$/ do |meth|

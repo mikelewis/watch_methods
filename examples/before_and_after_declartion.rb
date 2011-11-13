@@ -1,4 +1,4 @@
-require 'method_added_hook'
+require 'watch_methods'
 
 class BeforeAndAfter
   watch_methods :yo do |meth|

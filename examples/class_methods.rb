@@ -1,4 +1,4 @@
-require 'method_added_hook'
+require 'watch_methods'
 
 class ClassMethodHook
   watch_methods /crawl|jump|sit/, :class_methods => true do |meth|

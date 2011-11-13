@@ -1,4 +1,4 @@
-require 'method_added_hook'
+require 'watch_methods'
 
 class Queues
   watch_methods /^queue_(.+)$/ do |meth|

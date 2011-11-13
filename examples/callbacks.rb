@@ -1,4 +1,4 @@
-require 'method_added_hook'
+require 'watch_methods'
 
 module Callbacks
   def self.included(base)
