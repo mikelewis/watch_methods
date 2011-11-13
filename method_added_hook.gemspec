@@ -8,9 +8,9 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Mike Lewis"]
   s.email       = ["ft.mikelewis@gmail.com"]
-  s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.homepage    = "http://github.com/mikelewis/method_added_hook"
+  s.summary     = %q{Easily monitor methods added within classes and modules.}
+  s.description = %q{Easily monitor methods added within classes and modules.}
 
   s.rubyforge_project = "method_added_hook"
 

@@ -80,90 +80,106 @@ describe "Method Added Hook" do
       end
     end
 
-  end
+    it "should yield the method name (Symbol) to the block" do
+      result = nil
+      SampleObject.class_eval do
+        watch_method_added /^t.*$/ do |meth|
+          result = meth
+        end
 
-  context "class methods" do
-    if defined?(SampleObject)
-      Object.send(:remove_const, :SampleClassObject)
-    end
-    SampleClassObject = Class.new
-  end
-
-  it "should work with eigenclass methods and eigenclass watch_method_added" do
-    result = nil
-    meta = class << SampleClassObject; self; end
-  meta.class_eval do
-    watch_method_added :game do |meth|
-      result = 5
-    end
-  end
-
-  class SampleClassObject
-    class << self
-      def game
-
-      end
-    end
-  end
-
-  result.should == 5
-end
-
-it "should work with singleton methods and eigenclass" do
-  result = nil
-  meta = class << SampleClassObject; self; end
-meta.class_eval do
-  watch_method_added :game do |meth|
-    result = 5
-  end
-end
-
-class SampleClassObject
-  def self.game
-
-  end
-end
-
-result.should == 5
-  end
-
-  it "should work with singleton methods and optional parameter" do
-    result = nil
-    SampleClassObject.class_eval do
-      watch_method_added :game, :class_methods => true do |meth|
-        result = 5
-      end
-    end
-
-    class SampleClassObject
-      def self.game
-
-      end
-    end
-
-    result.should == 5
-  end
-
-  it "should work with singleton methods and optional parameter" do
-    result = nil
-    SampleClassObject.class_eval do
-      watch_method_added :game, :class_methods => true do |meth|
-        result = 5
-      end
-    end
-
-    class SampleClassObject
-      class << self
-        def game
+        def test
 
         end
       end
+
+      result.should == :test
     end
 
-    result.should == 5
   end
 
-     {:string => "my_method", :symbol => :my_method, :regex => /^my_method$/, :array => [1,2,3, "my_method"]}.each do |type, value|
+  context "class methods" do
+    before do
+      if defined?(SampleClassObject)
+        Object.send(:remove_const, :SampleClassObject)
+      end
+      SampleClassObject = Class.new
+    end
+
+    it "should work with eigenclass methods and eigenclass watch_method_added" do
+        result = nil
+        meta = class << SampleClassObject; self; end
+        meta.class_eval do
+          watch_method_added :game do |meth|
+            result = 5
+          end
+        end
+
+      class SampleClassObject
+          class << self
+            def game
+
+            end
+          end
+        end
+
+      result.should == 5
+    end
+
+    it "should work with singleton methods and eigenclass" do
+      result = nil
+      meta = class << SampleClassObject; self; end
+      meta.class_eval do
+        watch_method_added :game do |meth|
+          result = 5
+        end
+      end
+
+      class SampleClassObject
+        def self.game
+
+        end
+      end
+
+      result.should == 5
+    end
+
+    it "should work with singleton methods and optional parameter" do
+      result = nil
+      SampleClassObject.class_eval do
+        watch_method_added :game, :class_methods => true do |meth|
+          result = 5
+        end
+      end
+
+      class SampleClassObject
+        def self.game
+
+        end
+      end
+
+      result.should == 5
+    end
+
+    it "should work with eigenclass methods and optional parameter" do
+      result = nil
+      SampleClassObject.class_eval do
+        watch_method_added :game, :class_methods => true do |meth|
+          result = 5
+        end
+      end
+
+      class SampleClassObject
+        class << self
+          def game
+
+          end
+        end
+      end
+
+      result.should == 5
+    end
+
+    {:string => "my_method", :symbol => :my_method, :regex => /^my_method$/, :array => [1,2,3, "my_method"]}.each do |type, value|
       it "should call a callback when a method is added with a #{type} before watch_method_added was called" do
         result = nil
         SampleClassObject.class_eval do
@@ -183,23 +199,122 @@ result.should == 5
     end
 
 
-  it "should work with an array and the optional parameter" do
-    result = nil
-    SampleClassObject.class_eval do
-      watch_method_added [:game, :test], :class_methods => true do |meth|
-        result = 5
+    it "should work with an array and the optional parameter" do
+      result = nil
+      SampleClassObject.class_eval do
+        watch_method_added [:game, :test], :class_methods => true do |meth|
+          result = 5
+        end
       end
+
+      class SampleClassObject
+        class << self
+          def test
+
+          end
+        end
+      end
+
+      result.should == 5
+    end
+  end
+
+  context "Modules" do
+    before do
+      if defined?(SampleModuleObject)
+        Object.send(:remove_const, :SampleModuleObject)
+      end
+      SampleModuleObject = Module.new
     end
 
-    class SampleClassObject
-      class << self
-        def test
+    it "should work for an instance method" do
+      result = nil
+      SampleModuleObject.module_eval do
+        watch_method_added :hi do
+          result = 5
+        end
+      end
+      module SampleModuleObject
+        def hi
 
         end
       end
+
+      result.should == 5
     end
 
-    result.should == 5
-  end
+    it "should work for a singleton method" do
+      result = nil
+      SampleModuleObject.module_eval do
+        watch_method_added :hi, :class_methods => true do
+          result = 5
+        end
+      end
+      module SampleModuleObject
+        def self.hi
 
+        end
+      end
+
+      result.should == 5
+    end
+
+
+    it "should work for an eigenclass method" do
+      result = nil
+      SampleModuleObject.module_eval do
+        watch_method_added :hi, :class_methods => true do
+          result = 5
+        end
+      end
+      module SampleModuleObject
+        class << self
+          def hi
+
+          end
+        end
+      end
+
+      result.should == 5
+    end
+
+    it "should work for an eigenclass method, watched from an eigenclass" do
+      result = nil
+      meta = (class << SampleModuleObject; self; end)
+      meta.class_eval do
+        watch_method_added :hi do
+          result = 5
+        end
+      end
+
+      module SampleModuleObject
+        class << self
+          def hi
+
+          end
+        end
+      end
+
+      result.should == 5
+    end
+
+    it "should work for a singleton method, watched from an eigenclass" do
+      result = nil
+      meta = (class << SampleModuleObject; self; end)
+      meta.class_eval do
+        watch_method_added :hi do
+          result = 5
+        end
+      end
+
+      module SampleModuleObject
+        def self.hi
+
+        end
+      end
+
+      result.should == 5
+    end
+
+  end
 end
