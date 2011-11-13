@@ -66,7 +66,8 @@ It will throw an exception as you haven't defined that method yet.
 #Solution
 
 ##Install
-  [sudo] gem install simpleconf
+
+    [sudo] gem install simpleconf
 
 
 ##Usage
