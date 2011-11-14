@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Mike Lewis"]
   s.email       = ["ft.mikelewis@gmail.com"]
-  s.homepage    = "http://github.com/mikelewis/method_added_hook"
+  s.homepage    = "http://github.com/mikelewis/watch_methods"
   s.summary     = %q{Easily monitor methods added within classes and modules.}
   s.description = %q{Easily monitor methods added within classes and modules.}
 
