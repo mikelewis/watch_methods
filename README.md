@@ -58,3 +58,6 @@ Here are some valid uses of `watch_methods`:
 
   To see all examples/cases, see the examples directory and the spec file.
 
+###Supports
+  Ruby 1.8.7, 1.9.2, 1.9.3
+
