@@ -18,7 +18,7 @@ watch_methods
 
 
 ### Skip all the crap, give me the examples.
-   [Examples](https://github.com/mikelewis/method_added_hook/tree/master/examples)
+   [Examples](https://github.com/mikelewis/watch_methods/tree/master/examples)
 
 ##Usage
    The method that you'll be interacting with is the `watch_methods` method that is defined as:
