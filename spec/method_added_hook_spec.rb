@@ -81,7 +81,7 @@ describe "Method Added Hook" do
     end
 
     it "should expand all arrays" do
-      SampleObject.class_eval { watch_methods ["meth1", "meth2"] {} }
+      SampleObject.class_eval { watch_methods(["meth1", "meth2"]) {} }
       h = SampleObject.class_eval{ @method_added_watcher }
       h.each_key do |key|
         key.class.should_not == Array
