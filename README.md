@@ -8,7 +8,7 @@ watch_methods
 ## Why would I want this?
   You are:
 
-  - developing a kick-ass gem and you want your users to use your class methods before methods are actually defined (think AR validators, callback etc.)
+  - developing a kick-ass gem and you want your users to use your declarative methods before methods are actually defined (think AR validators, callback etc.)
   - Want to monitor all methods starting with queue_ for your new awesome queueing gem.
   - and more!
 
